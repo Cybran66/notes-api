@@ -1,0 +1,17 @@
+@NotesApi_HostAddress = http://localhost:5139
+
+GET {{NotesApi_HostAddress}}/api/notes
+Accept: application/json
+
+###
+
+POST {{NotesApi_HostAddress}}/api/notes
+Content-Type: application/json
+
+{
+  "title": "First note",
+  "content": "My first note content",
+  "isArchived": false
+}
+
+###
