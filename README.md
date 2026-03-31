@@ -1,46 +1,162 @@
-# Notes API (ASP.NET Core + PostgreSQL)
+# 📝 Notes API
 
-Small portfolio backend project for a junior/intern role: CRUD API for notes with title search.
+Backend-проект на **C# / ASP.NET Core**, реализующий REST API для управления заметками.
 
-## Stack
+Проект демонстрирует базовые принципы разработки серверных приложений:
 
-- ASP.NET Core Web API (Controller-based)
-- Entity Framework Core
-- PostgreSQL
-- Swagger (Swashbuckle)
+* работа с HTTP API
+* CRUD-операции
+* интеграция с базой данных
+* структурирование кода
 
-## Endpoints
+---
 
-- `GET /api/notes` - get all notes
-- `GET /api/notes/{id}` - get note by id
-- `POST /api/notes` - create note
-- `PUT /api/notes/{id}` - update note
-- `DELETE /api/notes/{id}` - delete note
-- `GET /api/notes/search?query=...` - search notes by `Title`
+## 🚀 Возможности
 
-## PostgreSQL connection setup
+* Создание заметок
+* Получение списка заметок
+* Получение заметки по ID
+* Обновление заметок
+* Удаление заметок
+* Поиск заметок по названию
+* Архивирование заметок
 
-Edit `appsettings.json`:
+---
+
+## 🛠️ Технологии
+
+* **C#**
+* **ASP.NET Core Web API**
+* **Entity Framework Core**
+* **PostgreSQL**
+* **Swagger / OpenAPI**
+
+---
+
+## 📦 Структура проекта
+
+```
+NotesApi/
+├── Controllers/     # API контроллеры
+├── Models/          # Сущности (Note)
+├── Dtos/            # DTO объекты
+├── Data/            # DbContext
+├── appsettings.json # Конфигурация
+└── Program.cs       # Точка входа
+```
+
+---
+
+## ⚙️ Установка и запуск
+
+### 1. Клонировать репозиторий
+
+```
+git clone https://github.com/your-username/notes-api.git
+cd notes-api
+```
+
+---
+
+### 2. Настроить PostgreSQL
+
+Создайте базу данных:
+
+```sql
+CREATE DATABASE notesdb;
+```
+
+Создайте пользователя:
+
+```sql
+CREATE USER notesuser WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE notesdb TO notesuser;
+```
+
+---
+
+### 3. Настроить подключение
+
+Откройте `appsettings.json` и укажите:
 
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "Host=localhost;Port=5432;Database=notes_db;Username=postgres;Password=postgres"
+  "DefaultConnection": "Host=localhost;Port=5432;Database=notesdb;Username=notesuser;Password=your_password"
 }
 ```
 
-- `Database` - your database name
-- `Username` - your PostgreSQL user
-- `Password` - user password
+---
 
-## Run
+### 4. Применить миграции
 
-1. Restore packages:
-   - `dotnet restore`
-2. Restore local tools:
-   - `dotnet tool restore`
-3. Apply migrations:
-   - `dotnet ef database update`
-4. Start API:
-   - `dotnet run`
-5. Open Swagger UI:
-   - `https://localhost:7077/swagger`
+```
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
+
+---
+
+### 5. Запустить проект
+
+```
+dotnet run
+```
+
+После запуска открой:
+
+👉 [https://localhost:xxxx/swagger](https://localhost:xxxx/swagger)
+
+---
+
+## 📡 Примеры запросов
+
+### Создание заметки
+
+```
+POST /api/notes
+```
+
+```json
+{
+  "title": "Первая заметка",
+  "content": "Тестовый текст"
+}
+```
+
+---
+
+### Получить все заметки
+
+```
+GET /api/notes
+```
+
+---
+
+### Поиск
+
+```
+GET /api/notes/search?query=test
+```
+
+---
+
+## 💡 О проекте
+
+Небольшой сервис для управления заметками, реализованный с использованием ASP.NET Core и PostgreSQL.
+Проект отражает базовую структуру backend-приложения и демонстрирует работу с REST API и базой данных.
+
+---
+
+## 📈 Возможные улучшения
+
+* Добавить аутентификацию (JWT)
+* Реализовать пагинацию
+* Добавить логирование
+* Docker и деплой
+
+---
+
+## 👨‍💻 Автор
+
+Cybran66
