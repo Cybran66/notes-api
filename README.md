@@ -1,35 +1,90 @@
 # Notes API
 
-Portfolio backend project on ASP.NET Core + PostgreSQL.
+Небольшой, но реалистичный backend-проект для портфолио стажера: API для заметок на ASP.NET Core + PostgreSQL.
 
-It provides:
-- CRUD for notes
-- title search
-- revision history for each note
-- seeded demo data
-- enhanced Swagger UI with bilingual toggle (RU/EN) and a visual overview panel
+Проект демонстрирует:
+- CRUD-операции для заметок
+- поиск по заголовку
+- историю изменений заметок (ревизии)
+- автонаполнение демо-данными
+- улучшенный Swagger UI с переключением языка `RU/EN` и визуальным обзорным блоком
 
-## Stack
+## Технологии
 
 - C#
-- ASP.NET Core Web API (controller-based)
+- ASP.NET Core Web API (Controller-based)
 - Entity Framework Core
 - PostgreSQL
 - Swagger / OpenAPI (Swashbuckle)
 
-## Endpoints
+## Функционал API
 
-- `GET /api/notes`
-- `GET /api/notes/{id}`
-- `GET /api/notes/{id}/history`
-- `POST /api/notes`
-- `PUT /api/notes/{id}`
-- `DELETE /api/notes/{id}`
-- `GET /api/notes/search?query=...`
+- `GET /api/notes` — получить список заметок
+- `GET /api/notes/{id}` — получить заметку по id
+- `POST /api/notes` — создать заметку
+- `PUT /api/notes/{id}` — обновить заметку
+- `DELETE /api/notes/{id}` — удалить заметку
+- `GET /api/notes/search?query=...` — поиск по `Title`
+- `GET /api/notes/{id}/history` — история изменений заметки
 
-## Database setup
+## Особенности проекта
 
-Edit `appsettings.json`:
+### 1. История изменений (Revision History)
+
+Для каждой заметки фиксируются ревизии с действием:
+- `Создана`
+- `Обновлена`
+- `Удалена`
+
+История хранится отдельно в таблице `NoteRevisions` и доступна через endpoint `history`.
+
+### 2. Демо-данные из коробки
+
+При запуске приложение:
+1. Применяет миграции автоматически.
+2. Проверяет наличие seed-заметок.
+3. Добавляет недостающие записи (и ревизии), чтобы API сразу было с данными.
+
+Это позволяет открыть Swagger и сразу увидеть «живой» результат без ручного `POST`.
+
+### 3. Улучшенный Swagger UI
+
+- Корневой адрес документации: `/`
+- Переключение языка интерфейса: `?lang=ru` / `?lang=en`
+- Визуальный блок с:
+  - описанием проекта
+  - кнопкой быстрого перехода к `GET /api/notes`
+  - сводкой и списком записей, уже лежащих в БД
+
+## Структура проекта
+
+```text
+NotesApi/
+  Controllers/
+    NotesController.cs
+  Data/
+    NotesDbContext.cs
+    SeedData.cs
+  DTOs/
+    CreateNoteDto.cs
+    UpdateNoteDto.cs
+    NoteDto.cs
+    NoteRevisionDto.cs
+  Models/
+    Note.cs
+    NoteRevision.cs
+  Migrations/
+    ...
+  wwwroot/swagger-ui/
+    custom.css
+    custom.js
+  Program.cs
+  appsettings.json
+```
+
+## Настройка PostgreSQL
+
+Открой `appsettings.json` и укажи свои параметры:
 
 ```json
 "ConnectionStrings": {
@@ -37,20 +92,31 @@ Edit `appsettings.json`:
 }
 ```
 
-## Run
+Где:
+- `Database` — имя базы
+- `Username` — пользователь PostgreSQL
+- `Password` — пароль пользователя
 
-1. Restore dependencies:
+## Запуск
+
+1. Восстановить пакеты:
    - `dotnet restore`
-2. Restore local tools:
+2. Восстановить локальные инструменты:
    - `dotnet tool restore`
-3. Run:
+3. Запустить проект:
    - `dotnet run`
-4. Open docs:
-   - `http://localhost:5139/?lang=ru`
-   - `http://localhost:5139/?lang=en`
 
-## Notes
+Swagger UI:
+- `http://localhost:5139/?lang=ru`
+- `http://localhost:5139/?lang=en`
 
-- On startup, migrations are applied automatically.
-- SeedData adds demo records if they are missing, so API is never empty in demos.
-- Revision history entries are created automatically on create/update/delete operations.
+## Быстрая проверка сценария
+
+1. Открыть `GET /api/notes` — проверить, что список не пустой.
+2. Создать заметку через `POST /api/notes`.
+3. Обновить заметку через `PUT /api/notes/{id}`.
+4. Проверить `GET /api/notes/{id}/history` — должны быть ревизии.
+
+## Для резюме (коротко)
+
+Разработал REST API для заметок на ASP.NET Core и PostgreSQL: реализовал CRUD, поиск, историю изменений, миграции EF Core, автонаполнение тестовыми данными и двуязычную Swagger-документацию с кастомным UI.
