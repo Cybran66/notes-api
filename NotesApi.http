@@ -15,3 +15,8 @@ Content-Type: application/json
 }
 
 ###
+
+GET {{NotesApi_HostAddress}}/api/notes/1/history
+Accept: application/json
+
+###

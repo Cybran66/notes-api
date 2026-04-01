@@ -10,6 +10,7 @@ public class NotesDbContext : DbContext
     }
 
     public DbSet<Note> Notes => Set<Note>();
+    public DbSet<NoteRevision> NoteRevisions => Set<NoteRevision>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,17 +26,38 @@ public class NotesDbContext : DbContext
             entity.Property(note => note.CreatedAt)
                 .IsRequired();
         });
+
+        modelBuilder.Entity<NoteRevision>(entity =>
+        {
+            entity.Property(revision => revision.Title)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(revision => revision.Content)
+                .IsRequired();
+
+            entity.Property(revision => revision.Action)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.Property(revision => revision.ChangedAt)
+                .IsRequired();
+
+            entity.HasIndex(revision => new { revision.NoteId, revision.ChangedAt });
+        });
     }
 
     public override int SaveChanges()
     {
         SetCreatedAtForNewNotes();
+        SetChangedAtForNewRevisions();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         SetCreatedAtForNewNotes();
+        SetChangedAtForNewRevisions();
         return base.SaveChangesAsync(cancellationToken);
     }
 
@@ -49,6 +71,20 @@ public class NotesDbContext : DbContext
             if (entry.Entity.CreatedAt == default)
             {
                 entry.Entity.CreatedAt = DateTime.UtcNow;
+            }
+        }
+    }
+
+    private void SetChangedAtForNewRevisions()
+    {
+        var newRevisions = ChangeTracker.Entries<NoteRevision>()
+            .Where(entry => entry.State == EntityState.Added);
+
+        foreach (var entry in newRevisions)
+        {
+            if (entry.Entity.ChangedAt == default)
+            {
+                entry.Entity.ChangedAt = DateTime.UtcNow;
             }
         }
     }
